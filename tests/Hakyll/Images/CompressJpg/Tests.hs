@@ -19,8 +19,8 @@ import           Control.Exception      (ErrorCall, catch, evaluate)
 import           Text.Printf            (printf)
 
 
-testJpg :: IO Image 
-testJpg = Image Jpeg <$> (B.readFile "tests/data/piccolo.jpg")
+testJpg :: IO Image
+testJpg = Image 100 <$> (decode <$> B.readFile "tests/data/piccolo.jpg")
 
 fromAssertions :: String       -- ^ Name
                -> [Assertion]  -- ^ Cases
@@ -33,9 +33,9 @@ fromAssertions name =
 testCompressionFromImage :: Assertion
 testCompressionFromImage = do
     im <- testJpg
-    let initialSize = (B.length . image) im
-        finalSize   = (B.length . image . compressJpg 25) im
-    
+    let initialSize = (B.length . encode Jpeg) im
+        finalSize   = (B.length . encode Jpeg . compressJpg 25) im
+
     assertBool "Image was not compressed" (initialSize > finalSize)
 
 -- Test that specifying a JPG encoding below 0 will fail

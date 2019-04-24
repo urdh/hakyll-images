@@ -82,7 +82,7 @@ The documentation for the latest release is available on the [Hackage page](http
 
 Here are the upcoming features of `hakyll-images`:
 
-- [ ] Format conversion
+- [-] Format conversion
 
 ## Support  Issues / Feature requests
 

@@ -37,19 +37,10 @@ module Hakyll.Images.CompressJpg
     , compressJpg
     ) where
 
-import Data.ByteString.Lazy             (toStrict)
-
-import Codec.Picture.Jpg                (decodeJpeg)
-import Codec.Picture.Saving             (imageToJpg)
-
 import Hakyll.Core.Item                 (Item(..))
 import Hakyll.Core.Compiler             (Compiler)
 
-import Hakyll.Images.Common             ( Image(..)
-                                        , ImageFormat(..)
-                                        , image
-                                        , format
-                                        )
+import Hakyll.Images.Common             (Image(..))
 
 
 -- | Jpeg encoding quality, from 0 (lower quality) to 100 (best quality).
@@ -61,15 +52,9 @@ type JpgQuality = Int
 -- An error is raised if the image cannot be decoded, or if the 
 -- encoding quality is out-of-bounds
 compressJpg :: JpgQuality -> Image -> Image
-compressJpg quality src = if (format src) /= Jpeg
-        then error $ "Image is not a JPEG."
-        else 
-            case decodeJpeg $ image src of
-                Left _         -> error $ "Loading the image failed."
-                Right dynImage -> 
-                    if (quality < 0 || quality > 100)
-                        then error $ "JPEG encoding quality should be between 0 and 100."
-                        else Image Jpeg $ (toStrict $ imageToJpg quality dynImage)
+compressJpg quality' src = if (quality' < 0 || quality' > 100)
+    then error $ "JPEG encoding quality should be between 0 and 100."
+    else Image quality' (image src)
 
 -- | Compiler that compresses a JPG image to a certain quality setting.
 -- The quality should be between 0 (lowest quality) and 100 (best quality).
@@ -82,4 +67,4 @@ compressJpg quality src = if (format src) /= Jpeg
 --         >>= compressJpgCompiler 50
 -- @
 compressJpgCompiler :: JpgQuality -> Item Image -> Compiler (Item Image)
-compressJpgCompiler quality item = return $ compressJpg quality <$> item 
+compressJpgCompiler quality' item = return $ compressJpg quality' <$> item

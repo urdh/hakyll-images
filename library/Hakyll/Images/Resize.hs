@@ -48,25 +48,19 @@ module Hakyll.Images.Resize
     , ensureFitCompiler
     ) where
 
-import Codec.Picture            (convertRGBA8, decodeImage)
+import Codec.Picture            (convertRGBA8)
 import Codec.Picture.Types      (DynamicImage(..), imageHeight, imageWidth)
 import Codec.Picture.Extra      (scaleBilinear)
 
-import Data.ByteString          (ByteString)
 import Data.Ratio               ((%))
 
 import Hakyll.Core.Item         (Item(..))
 import Hakyll.Core.Compiler     (Compiler)
 
-import Hakyll.Images.Common     (Image(..), encode)
+import Hakyll.Images.Common     (Image(..), mapImage)
 
 type Width = Int
 type Height = Int
-
-decodeImage' :: ByteString -> DynamicImage
-decodeImage' im = case decodeImage im of
-    Left msg -> error msg
-    Right im' -> im' 
 
 -- | Resize an image to specified width and height using the bilinear transform.
 -- The aspect ratio may not be respected.
@@ -132,9 +126,7 @@ ensureFit w h = scale' w h False
 -- Note that in the resizing process, images will be converted to RGBA8.
 -- To preserve aspect ratio, take a look at 'scaleImageCompiler'.
 resizeImageCompiler :: Width -> Height -> Item Image -> Compiler (Item Image)
-resizeImageCompiler w h item =
-    let fmt = (format . itemBody) item
-    in return $ (encode fmt . resize w h . decodeImage' . image) <$> item
+resizeImageCompiler w h item = return $ mapImage (resize w h) <$> item
 
 -- | Compiler that rescales images to fit within dimensions. Aspect ratio
 -- will be preserved. Images might be scaled up as well.
@@ -149,9 +141,7 @@ resizeImageCompiler w h item =
 -- Note that in the resizing process, images will be converted to RGBA8.
 -- To ensure images are only scaled __down__, take a look at 'ensureFitCompiler'.
 scaleImageCompiler :: Width -> Height -> Item Image -> Compiler (Item Image)
-scaleImageCompiler w h item =
-    let fmt = (format . itemBody) item
-    in return $ (encode fmt . scale w h . decodeImage' . image) <$> item
+scaleImageCompiler w h item = return $ mapImage (scale w h) <$> item
 
 -- | Compiler that ensures images will fit within dimensions. Images might 
 -- be scaled down, but never up.  Aspect ratio will be preserved.
@@ -166,6 +156,4 @@ scaleImageCompiler w h item =
 -- Note that in the resizing process, images will be converted to RGBA8.
 -- To allow the possibility of scaling up, take a look at 'scaleImageCompiler'.
 ensureFitCompiler :: Width -> Height -> Item Image -> Compiler (Item Image)
-ensureFitCompiler w h item  = 
-    let fmt = (format . itemBody) item
-    in return $ (encode fmt . ensureFit w h . decodeImage' . image) <$> item
+ensureFitCompiler w h item  = return $ mapImage (ensureFit w h) <$> item
