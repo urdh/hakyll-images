@@ -35,6 +35,7 @@ library
       Hakyll.Images.Internal
       Hakyll.Images.Resize
       Hakyll.Images.Metadata
+      Hakyll.Images.Rotate
   other-modules:
       Codec.Picture.Saving.WithMetadata
       Hakyll.Images.Common
@@ -59,6 +60,7 @@ test-suite spec
       Hakyll.Images.CompressJpg.Tests
       Hakyll.Images.Metadata.Tests
       Hakyll.Images.Resize.Tests
+      Hakyll.Images.Rotate.Tests
       Hakyll.Images.Tests.Utils
   hs-source-dirs: tests
   ghc-options: -Wall -Wcompat

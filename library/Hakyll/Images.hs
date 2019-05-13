@@ -68,6 +68,9 @@ module Hakyll.Images
     scaleImageCompiler,
     ensureFit,
     ensureFitCompiler,
+    -- Rotating
+    rotateFromExif,
+    rotateFromExifCompiler,
   )
 where
 
@@ -75,3 +78,4 @@ import Hakyll.Images.Common
 import Hakyll.Images.CompressJpg
 import Hakyll.Images.Metadata
 import Hakyll.Images.Resize
+import Hakyll.Images.Rotate
