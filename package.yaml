@@ -37,6 +37,7 @@ library:
   - Hakyll.Images
   - Hakyll.Images.CompressJpg
   - Hakyll.Images.Resize
+  - Hakyll.Images.Rotate
 
 tests:
   spec:
