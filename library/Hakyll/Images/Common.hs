@@ -86,7 +86,7 @@ decodeContent im = case decodeImageWithMetadata im of
       pruneMetadatas :: Metadatas -> Metadatas
       pruneMetadatas meta =
         foldMap (\(k, v) -> Meta.singleton (Meta.Exif k) v) $
-          filter (\(k, _) -> k == Meta.TagOrientation) $
+          filter (\(k, _) -> k `elem` [Meta.TagOrientation, Meta.TagICCProfile]) $
             Meta.extractExifMetas meta
 
 instance Functor WithMetadata where
